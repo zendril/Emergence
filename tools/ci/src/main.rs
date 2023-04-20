@@ -6,6 +6,7 @@
 //! - Official CI runs latest stable
 //! - Local runs use whatever the default Rust is locally
 
+use bevy::prelude::*;
 use bevy::utils::HashSet;
 use xshell::{cmd, Shell};
 
@@ -18,6 +19,7 @@ enum Check {
     DocTest,
     DocCheck,
     CompileCheck,
+    ValidateAssets,
 }
 
 impl Check {
@@ -30,6 +32,7 @@ impl Check {
             Check::DocTest,
             Check::DocCheck,
             Check::CompileCheck,
+            Check::ValidateAssets,
         ]
         .iter()
         .copied()
@@ -45,6 +48,7 @@ impl Check {
             Check::DocTest => "doctest",
             Check::DocCheck => "doccheck",
             Check::CompileCheck => "compilecheck",
+            Check::ValidateAssets => "assets",
         }
     }
 
@@ -57,6 +61,7 @@ impl Check {
             "doctest" => Some(Check::DocTest),
             "doccheck" => Some(Check::DocCheck),
             "compilecheck" => Some(Check::CompileCheck),
+            "assets" => Some(Check::ValidateAssets),
             _ => None,
         }
     }
@@ -137,6 +142,11 @@ fn main() {
         cmd!(sh, "cargo check --workspace")
             .run()
             .expect("Please fix compiler errors in above output.");
+    }
+
+    if what_to_run.contains(&Check::ValidateAssets) {
+        info!("Starting Bevy app");
+        App::new().run();
     }
 }
 
