@@ -7,6 +7,8 @@
 //! - Local runs use whatever the default Rust is locally
 
 use bevy::prelude::*;
+use std::process;
+
 use bevy::utils::HashSet;
 use xshell::{cmd, Shell};
 
@@ -89,7 +91,7 @@ fn main() {
                     .collect::<Vec<&str>>()
                     .join(", "),
             );
-            return;
+            process::exit(1);
         }
     } else {
         Check::all()
